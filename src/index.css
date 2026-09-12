@@ -1,0 +1,132 @@
+@import 'tailwindcss';
+
+:root {
+  --cream: #fff7f0;
+  --blush: #fde2e4;
+  --rose: #f6bcc2;
+  --rose-gold: #e8b4a0;
+  --champagne: #f3dfc1;
+  --plum: #6b3a4f;
+  --plum-deep: #3e1f2e;
+  --gold: #cba135;
+  color-scheme: light;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overscroll-behavior-y: none;
+  background: var(--cream);
+  color: var(--plum-deep);
+  font-family: 'Poppins', system-ui, sans-serif;
+  scroll-behavior: smooth;
+}
+
+#root {
+  min-height: 100svh;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.font-display {
+  font-family: 'Playfair Display', serif;
+}
+
+.font-script {
+  font-family: 'Cormorant Garamond', serif;
+}
+
+::selection {
+  background: var(--rose);
+  color: var(--plum-deep);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--rose-gold);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-24px) translateX(10px) rotate(8deg);
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 7s ease-in-out infinite;
+}
+
+@keyframes flicker {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scaleY(1) translateX(0);
+  }
+  25% {
+    opacity: 0.85;
+    transform: scaleY(1.05) translateX(-1px);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scaleY(0.95) translateX(1px);
+  }
+  75% {
+    opacity: 0.9;
+    transform: scaleY(1.02) translateX(-0.5px);
+  }
+}
+
+.animate-flicker {
+  animation: flicker 1.4s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background-size: 200% auto;
+  animation: shimmer 3s linear infinite;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.glass-dark {
+  background: rgba(62, 31, 46, 0.35);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.text-gradient {
+  background: linear-gradient(90deg, #c9835a, #e8b4a0, #cba135, #e8b4a0, #c9835a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
