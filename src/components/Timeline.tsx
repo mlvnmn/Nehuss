@@ -53,14 +53,9 @@ export default function Timeline() {
                   />
                 </div>
                 <div className="p-4">
-                  <div className="mb-1 flex items-center justify-between">
-                    <h3 className="font-display text-base font-semibold text-[#3e1f2e]">
-                      {memory.title}
-                    </h3>
-                    <span className="text-xs font-medium text-[#a45c47]">
-                      {memory.date}
-                    </span>
-                  </div>
+                  <h3 className="font-display mb-1 text-base font-semibold text-[#3e1f2e]">
+                    {memory.title}
+                  </h3>
                   <p className="text-sm leading-relaxed text-[#6b3a4f]">
                     {memory.description}
                   </p>

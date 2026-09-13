@@ -2,6 +2,8 @@ import BackgroundEffects from "./components/BackgroundEffects";
 import MusicPlayer from "./components/MusicPlayer";
 import Hero from "./components/Hero";
 import Timeline from "./components/Timeline";
+import PortraitShowcase from "./components/PortraitShowcase";
+import Gallery from "./components/Gallery";
 import NotesGrid from "./components/NotesGrid";
 import CakeInteraction from "./components/CakeInteraction";
 import LetterModal from "./components/LetterModal";
@@ -16,6 +18,8 @@ function App() {
       <main className="relative z-10">
         <Hero />
         <Timeline />
+        <PortraitShowcase />
+        <Gallery />
         <NotesGrid />
         <CakeInteraction />
         <LetterModal />

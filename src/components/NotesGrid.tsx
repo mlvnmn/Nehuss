@@ -3,7 +3,15 @@ import { motion } from "framer-motion";
 import { Heart } from "lucide-react";
 import { birthdayData } from "../data/birthdayData";
 
-function FlipCard({ title, note }: { title: string; note: string }) {
+function FlipCard({
+  title,
+  note,
+  image,
+}: {
+  title: string;
+  note: string;
+  image: string;
+}) {
   const [flipped, setFlipped] = useState(false);
 
   return (
@@ -17,14 +25,22 @@ function FlipCard({ title, note }: { title: string; note: string }) {
         transition={{ duration: 0.6, ease: "easeInOut" }}
       >
         {/* front */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-2xl glass p-4 text-center shadow-md shadow-rose-200/30 [backface-visibility:hidden]">
-          <Heart size={22} className="fill-[#e8b4a0] text-[#e8b4a0]" />
-          <h3 className="font-display text-sm font-semibold text-[#3e1f2e]">
-            {title}
-          </h3>
-          <span className="text-[10px] tracking-wide text-[#a45c47] uppercase">
-            tap to reveal
-          </span>
+        <div className="absolute inset-0 overflow-hidden rounded-2xl shadow-md shadow-rose-200/30 [backface-visibility:hidden]">
+          <img
+            src={image}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#3e1f2e]/85 via-[#3e1f2e]/25 to-[#e8b4a0]/20" />
+          <div className="relative flex h-full flex-col items-center justify-end gap-1 p-4 text-center">
+            <Heart size={20} className="mb-1 fill-white/90 text-white/90" />
+            <h3 className="font-display text-sm font-semibold text-white drop-shadow">
+              {title}
+            </h3>
+            <span className="text-[10px] tracking-wide text-white/80 uppercase">
+              tap to reveal
+            </span>
+          </div>
         </div>
 
         {/* back */}
@@ -68,7 +84,7 @@ export default function NotesGrid() {
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.5, delay: i * 0.06 }}
           >
-            <FlipCard title={item.title} note={item.note} />
+            <FlipCard title={item.title} note={item.note} image={item.image} />
           </motion.div>
         ))}
       </div>

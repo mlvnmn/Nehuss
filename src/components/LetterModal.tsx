@@ -3,9 +3,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Mail, X } from "lucide-react";
 import { birthdayData } from "../data/birthdayData";
 
-function useTypewriter(text: string, active: boolean, speed = 18) {
+function useTypewriter(text: string, active: boolean, targetDurationMs = 9000) {
   const [output, setOutput] = useState("");
   const indexRef = useRef(0);
+  const tickMs = 16;
+  const charsPerTick = Math.max(1, Math.ceil(text.length / (targetDurationMs / tickMs)));
 
   useEffect(() => {
     if (!active) {
@@ -14,19 +16,20 @@ function useTypewriter(text: string, active: boolean, speed = 18) {
       return;
     }
     const interval = setInterval(() => {
-      indexRef.current += 1;
+      indexRef.current += charsPerTick;
       setOutput(text.slice(0, indexRef.current));
       if (indexRef.current >= text.length) clearInterval(interval);
-    }, speed);
+    }, tickMs);
     return () => clearInterval(interval);
-  }, [active, text, speed]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active, text]);
 
   return output;
 }
 
 export default function LetterModal() {
   const [open, setOpen] = useState(false);
-  const typed = useTypewriter(birthdayData.letterContent, open, 14);
+  const typed = useTypewriter(birthdayData.letterContent, open);
 
   useEffect(() => {
     if (open) {
