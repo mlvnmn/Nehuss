@@ -1,5 +1,4 @@
 import BackgroundEffects from "./components/BackgroundEffects";
-import MusicPlayer from "./components/MusicPlayer";
 import Hero from "./components/Hero";
 import Timeline from "./components/Timeline";
 import PortraitShowcase from "./components/PortraitShowcase";
@@ -13,7 +12,6 @@ function App() {
   return (
     <div className="relative min-h-[100svh] w-full overflow-x-hidden">
       <BackgroundEffects />
-      <MusicPlayer />
 
       <main className="relative z-10">
         <Hero />
