@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useAnimationControls } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Pause, Play, X } from "lucide-react";
 import { birthdayData } from "../data/birthdayData";
 import type { GalleryPhoto } from "../data/birthdayData";
@@ -7,50 +7,18 @@ import type { GalleryPhoto } from "../data/birthdayData";
 const SLIDE_DURATION = 4200;
 
 function StoryProgressBar({
-  active,
-  done,
-  paused,
-  duration,
-  onComplete,
+  state,
+  progress,
 }: {
-  active: boolean;
-  done: boolean;
-  paused: boolean;
-  duration: number;
-  onComplete: () => void;
+  state: "upcoming" | "active" | "done";
+  progress: number;
 }) {
-  const controls = useAnimationControls();
-
-  useEffect(() => {
-    if (done) {
-      controls.set({ scaleX: 1 });
-      return;
-    }
-    if (!active) {
-      controls.set({ scaleX: 0 });
-      return;
-    }
-    if (paused) {
-      controls.stop();
-      return;
-    }
-    controls
-      .start({
-        scaleX: 1,
-        transition: { duration: duration / 1000, ease: "linear" },
-      })
-      .then(() => {
-        if (active) onComplete();
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active, paused, done]);
+  const scaleX = state === "done" ? 1 : state === "active" ? progress : 0;
 
   return (
     <div className="h-[3px] flex-1 overflow-hidden rounded-full bg-white/30">
-      <motion.div
-        initial={{ scaleX: 0 }}
-        animate={controls}
-        style={{ transformOrigin: "left" }}
+      <div
+        style={{ transform: `scaleX(${scaleX})`, transformOrigin: "left" }}
         className="h-full w-full rounded-full bg-white"
       />
     </div>
@@ -67,13 +35,50 @@ export default function PortraitStory({
   const photos: GalleryPhoto[] = birthdayData.portraits;
   const [index, setIndex] = useState(startIndex);
   const [paused, setPaused] = useState(false);
+  const [progress, setProgress] = useState(0);
   const holdTimer = useRef<number | null>(null);
+  const elapsedRef = useRef(0);
 
-  const goNext = () => {
-    setIndex((i) => (i + 1 < photos.length ? i + 1 : i));
-    if (index + 1 >= photos.length) onClose();
-  };
+  const goNext = () =>
+    setIndex((i) => {
+      if (i + 1 >= photos.length) {
+        onClose();
+        return i;
+      }
+      return i + 1;
+    });
   const goPrev = () => setIndex((i) => Math.max(0, i - 1));
+
+  // reset progress whenever the slide changes
+  useEffect(() => {
+    elapsedRef.current = 0;
+    setProgress(0);
+  }, [index]);
+
+  // single owned animation-frame loop drives both the visual progress and
+  // the advance — it cancels itself on every dependency change, so pausing
+  // and resuming can never spawn a second overlapping timer.
+  useEffect(() => {
+    if (paused) return;
+    let raf = 0;
+    const startedAt = performance.now() - elapsedRef.current;
+
+    const tick = (now: number) => {
+      const elapsed = now - startedAt;
+      elapsedRef.current = elapsed;
+      const p = Math.min(1, elapsed / SLIDE_DURATION);
+      setProgress(p);
+      if (p >= 1) {
+        goNext();
+        return;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+
+    return () => cancelAnimationFrame(raf);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index, paused]);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -91,7 +96,7 @@ export default function PortraitStory({
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [index]);
+  }, []);
 
   const startHold = () => {
     holdTimer.current = window.setTimeout(() => setPaused(true), 180);
@@ -125,11 +130,8 @@ export default function PortraitStory({
           {photos.map((p, i) => (
             <StoryProgressBar
               key={p.id}
-              active={i === index}
-              done={i < index}
-              paused={paused}
-              duration={SLIDE_DURATION}
-              onComplete={goNext}
+              state={i < index ? "done" : i === index ? "active" : "upcoming"}
+              progress={progress}
             />
           ))}
         </div>
